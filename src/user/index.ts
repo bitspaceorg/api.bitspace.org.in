@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../../libs/utils/prisma";
+import {prisma} from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module";
 
 const router = express.Router();
@@ -8,19 +8,22 @@ const BASE_ROUTE = "/user";
 
 // GET
 router.get("/", async (req, res) => {
-    const { id } = req.query;
+    const id = typeof req.query.id === 'string' ? req.query.id : "";
+    console.log(id);
+    
+    
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
-        const data = await prisma.users.findUnique({
-            where: {
-                id: Number(id)
+        const data = await prisma.users.findFirst({
+            where: { id },
+            include: {
+                Role_user: true,
             }
         })
         return res.json({ type: "SUCCESS", data })
     } catch (e) {
-        console.log(e)
         return res.json({ type: "FAILED" })
     }
 })
