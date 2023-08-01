@@ -7,49 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model message {
-  id        Int    @id @default(autoincrement())
-  content   String
-  name      String
-  image     String
-  parent_id Int?
-}
-
-model Rank {
-  rank         Int     @id
-  is_mod       Boolean
-  is_super_mod Boolean
-  Users        Users[]
-}
-
-model Role {
-  role      String      @id
-  Role_user Role_user[]
-}
-
-model Role_user {
-  role     String
-  username String
-  Role     Role   @relation(fields: [role], references: [role])
-  Users    Users  @relation(fields: [username], references: [username])
-
-  @@id([role, username])
-}
-
-model Users {
-  id                String      @id
-  username          String      @unique
-  rank              Int
-  is_ban            Boolean     @default(false)
-  title             String
-  is_joined_discord Boolean
-  created_at        DateTime?   @default(now()) @db.Timestamptz(6)
-  discord_id        String?
-  github_id         String
-  strike            Int         @default(0) @db.SmallInt
-  points            Int?        @default(0)
-  Role_user         Role_user[]
-  Rank              Rank        @relation(fields: [rank], references: [rank])
+model year {
+  id        Int        @id
+  timelines timeline[]
 }
 
 model timeline {
@@ -57,11 +17,50 @@ model timeline {
   title   String
   content String[]
   date    DateTime
-  year_id Int
+  year_id  Int
   year    year     @relation(fields: [year_id], references: [id])
 }
 
-model year {
-  id       Int        @id
-  timeline timeline[]
+model message {
+    id       Int    @id @default(autoincrement())
+    content  String
+    parent_id Int?
+    name     String
+    image    String
+}
+
+model Users{
+    id String @id @default(cuid())
+    username   String    @unique
+    Rank Rank @relation(fields: [rank],references: [rank])
+    rank Int
+    Role Role_user[]
+    is_ban Boolean @default(false)
+    title String
+    is_joined_discord Boolean
+    created_at DateTime? @default(now()) @db.Timestamptz(6)
+    discord_id String?
+    github_id  String
+    strike     Int       @default(0) @db.SmallInt
+    points     Int?      @default(0)
+}
+
+model Role{
+    role String @id
+    users Role_user[]
+}
+
+model Role_user{
+    Roles Role @relation(fields: [role],references: [role])
+    role String
+    User Users @relation(fields: [username],references: [username])
+    username String
+    @@id([role,username])
+}
+
+model Rank{
+    rank Int @id
+    Users Users[]
+    is_mod Boolean
+    is_super_mod Boolean
 }
