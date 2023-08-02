@@ -2,17 +2,26 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "index.ts",
       "use": "@vercel/node@1.11.0"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
+      "src": "/user",
+      "dest": "src/user"
+    },
+    {
+      "src": "/auth",
+      "dest": "src/auth"
+    },
+    {
+      "src": "/timeline",
+      "dest": "src/timeline"
+    },
+    {
+      "src": "/admin",
+      "dest": "src/admin"
     }
-  ],
-  "env": {
-    "TS_NODE_PROJECT": "src/tsconfig.json"
-  }
+  ]
 }
