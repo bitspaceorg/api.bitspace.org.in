@@ -8,19 +8,22 @@ const BASE_ROUTE = "/user";
 
 // GET
 router.get("/", async (req, res) => {
-    const { id } = req.query;
+    const id = typeof req.query.id === 'string' ? req.query.id : "";
+    console.log(id);
+
+
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
-        const data = await prisma.users.findUnique({
-            where: {
-                id: Number(id)
+        const data = await prisma.users.findFirst({
+            where: { id },
+            include: {
+                Role: true,
             }
         })
         return res.json({ type: "SUCCESS", data })
     } catch (e) {
-        console.log(e)
         return res.json({ type: "FAILED" })
     }
 })
