@@ -12,7 +12,7 @@ export type major = {
 
 export type timelines = {
     id: number,
-    timeline: Array<{
+    timelines: Array<{
         id: number,
         title: string,
         content: string[],

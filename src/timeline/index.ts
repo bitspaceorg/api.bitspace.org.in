@@ -11,7 +11,7 @@ const BASE_ROUTE = "/timeline";
 router.get("/", async (_, res) => {
     const data: Array<timelines> = await prisma.year.findMany({
         include: {
-            timeline: {
+            timelines: {
                 orderBy: {
                     date: 'asc',
                 },
@@ -22,12 +22,12 @@ router.get("/", async (_, res) => {
     data.forEach((element: timelines) => {
         let dict: major = { events: [], year: 0, }
         dict['year'] = element.id
-        element.timeline.forEach((ele: any) => {
+        element.timelines.forEach((ele: any) => {
             let obj: value = {
                 date: ele.date || new Date(0),
                 title: ele.title || '',
                 content: ele.content || [],
-                id: ele.id || 0 
+                id: ele.id || 0
             }
             dict.events.push(obj)
         })
@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
         await prisma.year.create({
             data: {
                 id: year_id,
-                timeline: {
+                timelines: {
                     create: {
                         date,
                         title,
@@ -75,7 +75,7 @@ router.post("/", async (req, res) => {
             }
         })
     }
-    res.json({ data })   
+    res.json({ data })
 });
 
 // PUT
@@ -98,7 +98,7 @@ router.delete("/", async (req, res) => {
     const { id } = req.body
     const data = await prisma.timeline.delete({
         where: {
-            id,
+            id
         },
     })
     res.json({ data, }).status(200)
