@@ -1,5 +1,5 @@
 import express from "express";
-import {prisma} from "../../libs/utils/prisma";
+import { prisma } from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module";
 
 const router = express.Router();
@@ -10,8 +10,8 @@ const BASE_ROUTE = "/user";
 router.get("/", async (req, res) => {
     const id = typeof req.query.id === 'string' ? req.query.id : "";
     console.log(id);
-    
-    
+
+
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
         const data = await prisma.users.findFirst({
             where: { id },
             include: {
-                Role_user: true,
+                Role: true,
             }
         })
         return res.json({ type: "SUCCESS", data })
