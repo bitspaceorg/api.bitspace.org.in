@@ -1,4 +1,3 @@
-// Types for the timeline module
 export type value = {
     date: Date,
     title: string,
