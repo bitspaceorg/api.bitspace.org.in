@@ -34,7 +34,6 @@ router.get("/", async (_, res) => {
         response.push(dict)
     });
     res.json(response).status(301)
-
 });
 
 // POST
