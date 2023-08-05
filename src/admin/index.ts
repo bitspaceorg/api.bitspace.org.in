@@ -1,7 +1,6 @@
+import { prisma } from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module"
-import { Response } from 'express';
-import express from "express";
-import { prisma } from "../../libs/utils/prisma"
+import express, { Response } from "express";
 import axios from "axios";
 import { base_url } from "../../libs/constants";
 
@@ -23,11 +22,10 @@ router.get("/", async ( _ ,res:Response) => {
 });
 
 // POST
-router.post("/", async () => {
-});
+router.post("/", async () => { });
 
 // POST - STRIKE
-router.post("/strike", async (req, res) => {
+router.post("/strike", async (req, res) => { 
     const { id } : { id: string } = req.body
     const { strike } = await prisma.users.update({
         where: {
@@ -47,7 +45,7 @@ router.post("/strike", async (req, res) => {
 
 // POST - BAN
 router.post("/ban", async (req, res) => {
-    const { id } : { id: string } = req.body
+    const { id } : { id: string  } = req.body
     const bool = await prisma.users.findUnique({
         where : { id }
     })
