@@ -1,24 +1,25 @@
 import { Module } from "../../libs/utils/types/module"
+import { Response } from 'express';
 import express from "express";
-<<<<<<< HEAD
-=======
 import { prisma } from "../../libs/utils/prisma"
 import axios from "axios";
 import { base_url } from "../../libs/constants";
->>>>>>> upstream/master
 
 const router = express.Router();
 
 const BASE_ROUTE = "/admin";
 
 // GET
-<<<<<<< HEAD
-router.get("/", async () => { });
-
-// POST
-router.post("/", async () => { });
-=======
-router.get("/", async () => { 
+router.get("/", async ( _ ,res:Response) => {
+    const data = await prisma.rank.findMany({
+        orderBy : [
+            { rank : 'asc' }
+        ],
+        include : {
+            Users : true
+        }
+    })
+    res.json(data)
 });
 
 // POST
@@ -26,7 +27,7 @@ router.post("/", async () => {
 });
 
 // POST - STRIKE
-router.post("/strike", async (req, res) => { 
+router.post("/strike", async (req, res) => {
     const { id } : { id: string } = req.body
     const { strike } = await prisma.users.update({
         where: {
@@ -46,17 +47,19 @@ router.post("/strike", async (req, res) => {
 
 // POST - BAN
 router.post("/ban", async (req, res) => {
-    const { id } : { id: string  } = req.body
+    const { id } : { id: string } = req.body
+    const bool = await prisma.users.findUnique({
+        where : { id }
+    })
     const data = await prisma.users.update({
         where: { id },
         data: {
-            is_ban: true,
+            is_ban: !bool?.is_ban,
             points: 0,
         }
     })
     res.json(data).status(301)
 });
->>>>>>> upstream/master
 
 // PUT
 router.put("/", async () => { });
