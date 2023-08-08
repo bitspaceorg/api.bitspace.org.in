@@ -6,26 +6,58 @@ const router = express.Router();
 
 const BASE_ROUTE = "/user";
 
-// GET
-router.get("/", async (req, res) => {
-    const id = typeof req.query.id === 'string' ? req.query.id : "";
-    console.log(id);
-
-
+// GET SPECIFIC USER
+router.get("/:id", async (req, res) => {
+    const id = typeof req.params.id === 'string' ? req.params.id : "";
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
-        const data = await prisma.users.findFirst({
+        const data = await prisma.users.findUnique({
             where: { id },
             include: {
                 Role: true,
-            }
+            },
         })
-        return res.json({ type: "SUCCESS", data })
+        return res.json(data).status(200)
     } catch (e) {
-        return res.json({ type: "FAILED" })
+        return res.status(500)
     }
+})
+
+// GET ALL USERS
+router.get("/", async (req, res) => {
+    const { roles } = req.query
+    if (!roles || roles == 'false') {
+        try {
+            const data = await prisma.users.findMany({
+                include: {
+                    Role: true,
+                },
+            })
+            return res.json(data).status(200)
+        } catch (e) {
+            return res.status(500)
+        }
+    } else if (roles === 'true') {
+        try {
+            const data = await prisma.users.findMany({
+                include: {
+                    Role: true,
+                },
+                // GET ONLY THE USERS HAVING SOME ROLES
+                where: {
+                    Role: {
+                        some: {},
+                    },
+                },
+            })
+            return res.json(data).status(200)
+        } catch (e) {
+            return res.status(500)
+        }
+    }
+    return res.status(500).json({error: 500})
 })
 
 // POST
