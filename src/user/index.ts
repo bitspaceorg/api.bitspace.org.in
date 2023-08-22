@@ -6,11 +6,10 @@ const router = express.Router();
 
 const BASE_ROUTE = "/user";
 
-// GET
-router.get("/", async (req, res) => {
-    const id = typeof req.query.id === 'string' ? req.query.id : "";
+// GET PARTICULAR USER
+router.get("/:id", async (req, res) => {
+    const id = typeof req.params.id === 'string' ? req.params.id : "";
     console.log(id);
-
 
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
@@ -25,6 +24,43 @@ router.get("/", async (req, res) => {
         return res.json({ type: "SUCCESS", data })
     } catch (e) {
         return res.json({ type: "FAILED" })
+    }
+})
+
+// GET ALL USERS
+router.get("/", async (req, res) => {
+    let { roles } = req.query
+    if (roles === 'true') {
+        try {
+            const data = await prisma.users.findMany({
+                include: {
+                    Role: true,
+                },
+                where: {
+                    NOT: {
+                        Role: {
+                            some: {},
+                        },
+                    },
+                },
+            })
+            console.log(data)
+            return res.json({ type: "SUCCESS", data })
+        } catch (e) {
+            return res.json({ type: "FAILED" })
+        }
+    } else {
+        try {
+            const data = await prisma.users.findMany({
+                include: {
+                    Role: true,
+                }
+            })
+            console.log(data)
+            return res.json({ type: "SUCCESS", data })
+        } catch (e) {
+            return res.json({ type: "FAILED" })
+        }
     }
 })
 
