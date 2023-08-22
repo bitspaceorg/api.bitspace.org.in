@@ -15,15 +15,15 @@ router.get("/:id", async (req, res) => {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
-        const data = await prisma.users.findFirst({
+        const data = await prisma.users.findUnique({
             where: { id },
             include: {
                 Role: true,
-            }
+            },
         })
-        return res.json({ type: "SUCCESS", data })
+        return res.json(data).status(200)
     } catch (e) {
-        return res.json({ type: "FAILED" })
+        return res.status(500)
     }
 })
 
