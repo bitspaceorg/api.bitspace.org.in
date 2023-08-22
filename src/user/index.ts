@@ -6,9 +6,11 @@ const router = express.Router();
 
 const BASE_ROUTE = "/user";
 
-// GET SPECIFIC USER
+// GET PARTICULAR USER
 router.get("/:id", async (req, res) => {
     const id = typeof req.params.id === 'string' ? req.params.id : "";
+    console.log(id);
+
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
@@ -27,37 +29,39 @@ router.get("/:id", async (req, res) => {
 
 // GET ALL USERS
 router.get("/", async (req, res) => {
-    const { roles } = req.query
-    if (!roles || roles == 'false') {
+    let { roles } = req.query
+    if (roles === 'true') {
         try {
             const data = await prisma.users.findMany({
                 include: {
                     Role: true,
                 },
-            })
-            return res.json(data).status(200)
-        } catch (e) {
-            return res.status(500)
-        }
-    } else if (roles === 'true') {
-        try {
-            const data = await prisma.users.findMany({
-                include: {
-                    Role: true,
-                },
-                // GET ONLY THE USERS HAVING SOME ROLES
                 where: {
-                    Role: {
-                        some: {},
+                    NOT: {
+                        Role: {
+                            some: {},
+                        },
                     },
                 },
             })
-            return res.json(data).status(200)
+            console.log(data)
+            return res.json({ type: "SUCCESS", data })
         } catch (e) {
-            return res.status(500)
+            return res.json({ type: "FAILED" })
+        }
+    } else {
+        try {
+            const data = await prisma.users.findMany({
+                include: {
+                    Role: true,
+                }
+            })
+            console.log(data)
+            return res.json({ type: "SUCCESS", data })
+        } catch (e) {
+            return res.json({ type: "FAILED" })
         }
     }
-    return res.status(500).json({error: 500})
 })
 
 // POST
