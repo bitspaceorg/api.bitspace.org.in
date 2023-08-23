@@ -2,6 +2,7 @@ import { Module } from "../../libs/utils/types/module"
 import express from "express";
 import { prisma } from "../../libs/utils/prisma";
 import { value, major, timelines } from "./types";
+import { AuthMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -37,7 +38,7 @@ router.get("/", async (_, res) => {
 });
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", AuthMiddleware, async (req, res) => {
     const { title, content }: { title: string, content: Array<string> } = req.body
     let { date }: { date: Date } = req.body
     date = date ? new Date(date) : new Date(Date.now())
@@ -78,7 +79,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT
-router.put("/", async (req, res) => {
+router.put("/", AuthMiddleware, async (req, res) => {
     const { id, title, content } = req.body
     const data = await prisma.timeline.update({
         where: {
@@ -93,7 +94,7 @@ router.put("/", async (req, res) => {
 });
 
 // DELETE
-router.delete("/", async (req, res) => {
+router.delete("/", AuthMiddleware, async (req, res) => {
     const { id } = req.body
     const data = await prisma.timeline.delete({
         where: {
