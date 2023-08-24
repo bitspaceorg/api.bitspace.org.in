@@ -1,6 +1,7 @@
 import express from "express";
 import { prisma } from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module";
+import { AuthMiddleware } from "src/middleware/auth";
 
 const router = express.Router();
 
@@ -57,11 +58,11 @@ router.get("/", async (req, res) => {
             return res.status(500)
         }
     }
-    return res.status(500).json({error: 500})
+    return res.status(500).json({ error: 500 })
 })
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", AuthMiddleware, async (req, res) => {
     const data = req.body;
     try {
         const response = await prisma.users.create({

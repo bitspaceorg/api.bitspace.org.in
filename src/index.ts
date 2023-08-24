@@ -19,7 +19,7 @@ app.use(cors({ origin: client_base_url, credentials: true }), bodyParser.json(),
 
 app.use(Auth.BASE_ROUTE, Auth.router);
 app.use(Timeline.BASE_ROUTE, Timeline.router);
-app.use(User.BASE_ROUTE, AuthMiddleware, User.router);
+app.use(User.BASE_ROUTE, User.router);
 app.use(Admin.BASE_ROUTE, AuthMiddleware, Admin.router);
 app.use(me.BASE_ROUTE, AuthMiddleware, me.router);
 
