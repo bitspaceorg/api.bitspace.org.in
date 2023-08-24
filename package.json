@@ -8,6 +8,10 @@
     "start": "nodemon src/index.ts",
     "build": "tsc -p ."
   },
+  "engine" : {
+    "node" : "16.13.0",
+    "npm" : "8.1.0"
+  },
   "author": "RahulNavneeth",
   "license": "ISC",
   "dependencies": {
