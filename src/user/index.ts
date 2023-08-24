@@ -9,18 +9,22 @@ const BASE_ROUTE = "/user";
 // GET PARTICULAR USER
 router.get("/:id", async (req, res) => {
     const id = typeof req.params.id === 'string' ? req.params.id : "";
-    console.log(id);
 
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
+        console.log('here')
         const data = await prisma.users.findUnique({
             where: { id },
             include: {
                 Role: true,
             },
         })
+        console.log(data)
+        if (data && !data.is_joined_discord) {
+            return res.json("USER NOT JOINED DISCORD").status(500)
+        }
         return res.json(data).status(200)
     } catch (e) {
         return res.status(500)
@@ -44,7 +48,6 @@ router.get("/", async (req, res) => {
                     },
                 },
             })
-            console.log(data)
             return res.json({ type: "SUCCESS", data })
         } catch (e) {
             return res.json({ type: "FAILED" })
@@ -56,7 +59,6 @@ router.get("/", async (req, res) => {
                     Role: true,
                 }
             })
-            console.log(data)
             return res.json({ type: "SUCCESS", data })
         } catch (e) {
             return res.json({ type: "FAILED" })
@@ -78,7 +80,34 @@ router.post("/", async (req, res) => {
 })
 
 // PUT
-router.put("/", async () => { });
+router.put("/", async (req, res) => {
+    const { id }: { id: string } = typeof req.body.id === 'string' ? req.body : { id: "" }
+    const data = { ...req.body, rank: Number(req.body.rank), points: Number(req.body.points) }
+    const username = req.body.init
+    delete data.init
+    try {
+        await prisma.role_user.deleteMany({
+            where: { username },
+        })
+        await prisma.role_user.createMany({
+            data: data.Role
+        })
+    } catch (err) {
+        console.log(err)
+        return res.json("ERROR IN UPDATING ROLES").status(400)
+    }
+    try {
+        delete data.Role
+        const log = await prisma.users.update({
+            where: { id },
+            data,
+        })
+        return res.json(log).status(200)
+    } catch (err) {
+        console.log(err)
+        return res.json("ERROR IN UPDATING USER").status(400)
+    }
+});
 
 // DELETE
 router.delete("/", async () => { });
