@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_1 = require("../../libs/utils/prisma");
+const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 const BASE_ROUTE = "/user";
 router.get("/:id", async (req, res) => {
@@ -60,7 +61,7 @@ router.get("/", async (req, res) => {
     }
     return res.status(500).json({ error: 500 });
 });
-router.post("/", async (req, res) => {
+router.post("/", middleware_1.AuthMiddleware, async (req, res) => {
     const data = req.body;
     try {
         const response = await prisma_1.prisma.users.create({
