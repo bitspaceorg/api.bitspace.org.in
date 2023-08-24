@@ -28,7 +28,7 @@ const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.production = process.env.PRODUCTION === 'true';
 exports.base_url = !exports.production ? 'http://localhost:6969' : 'https://api.bitspace.org.in';
-exports.client_base_url = !exports.production ? 'http://localhost:3000' : 'https://bitspace.org.in';
+exports.client_base_url = !exports.production ? 'http://localhost:3000' : 'https://www.bitspace.org.in';
 exports.client_id = process.env.GITHUB_CLIENT_ID;
 exports.client_secret = process.env.GITHUB_CLIENT_SECERT;
 exports.redirect_uri = `${exports.client_base_url}/github/auth/callback`;

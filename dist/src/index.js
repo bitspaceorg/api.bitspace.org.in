@@ -13,11 +13,22 @@ const timeline_1 = __importDefault(require("./timeline"));
 const admin_1 = __importDefault(require("./admin"));
 const roles_1 = __importDefault(require("./roles"));
 const me_1 = __importDefault(require("./me"));
-const constants_1 = require("../libs/constants");
 const middleware_1 = require("./middleware");
 const PORT = 6969;
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({ origin: constants_1.client_base_url, credentials: true }), body_parser_1.default.json(), (0, cookie_parser_1.default)());
+const allowedOrigins = ['http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+};
+app.use((0, cors_1.default)(corsOptions), body_parser_1.default.json(), (0, cookie_parser_1.default)());
 app.use(auth_1.default.BASE_ROUTE, auth_1.default.router);
 app.use(timeline_1.default.BASE_ROUTE, timeline_1.default.router);
 app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);

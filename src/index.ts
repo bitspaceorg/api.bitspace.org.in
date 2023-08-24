@@ -9,14 +9,26 @@ import Timeline from "./timeline"
 import Admin from "./admin"
 import Roles from "./roles"
 import me from "./me"
-import { client_base_url } from "../libs/constants"
 import { AuthMiddleware } from "./middleware"
 
 const PORT: number = 6969;
 
 const app = express();
 
-app.use(cors({ origin: client_base_url, credentials: true }), bodyParser.json(), cookieParser());
+const allowedOrigins = ['http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
+
+const corsOptions = {
+    origin: function(origin: any, callback: any) {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+};
+
+app.use(cors(corsOptions), bodyParser.json(), cookieParser());
 
 app.use(Auth.BASE_ROUTE, Auth.router);
 app.use(Timeline.BASE_ROUTE, Timeline.router);
