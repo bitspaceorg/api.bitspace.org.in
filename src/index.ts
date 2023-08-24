@@ -10,12 +10,13 @@ import Admin from "./admin"
 import Roles from "./roles"
 import me from "./me"
 import { AuthMiddleware } from "./middleware/auth"
+import { client_base_url } from "../libs/constants"
 
 const PORT: number = 6969;
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }), bodyParser.json(), cookieParser());
+app.use(cors({ origin: client_base_url, credentials: true }), bodyParser.json(), cookieParser());
 
 app.use(Auth.BASE_ROUTE, Auth.router);
 app.use(Timeline.BASE_ROUTE, Timeline.router);

@@ -8,6 +8,10 @@
     "start": "nodemon src/index.ts",
     "build": "tsc -p ."
   },
+  "engine" : {
+    "node" : "16.13.0",
+    "npm" : "8.1.0"
+  },
   "author": "RahulNavneeth",
   "license": "ISC",
   "dependencies": {
@@ -23,7 +27,9 @@
     "express": "^4.18.2",
     "js-cookies": "^1.0.4",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
