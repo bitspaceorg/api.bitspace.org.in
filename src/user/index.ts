@@ -2,6 +2,7 @@ import express from "express";
 import { AuthMiddleware } from "../middleware/auth";
 import { prisma } from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module";
+import { AuthMiddleware } from "src/middleware/auth";
 
 const router = express.Router();
 
@@ -62,6 +63,7 @@ router.get("/", async (req, res) => {
             return res.json({ type: "FAILED" })
         }
     }
+    return res.status(500).json({ error: 500 })
 })
 
 // POST
