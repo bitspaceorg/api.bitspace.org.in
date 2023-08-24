@@ -1,4 +1,5 @@
 import express from "express";
+import { AuthMiddleware } from "../middleware/auth";
 import { prisma } from "../../libs/utils/prisma";
 import { Module } from "../../libs/utils/types/module";
 
@@ -9,19 +10,16 @@ const BASE_ROUTE = "/user";
 // GET PARTICULAR USER
 router.get("/:id", async (req, res) => {
     const id = typeof req.params.id === 'string' ? req.params.id : "";
-
     if (!id) {
         return res.status(400).send("INVALID REQUEST")
     }
     try {
-        console.log('here')
         const data = await prisma.users.findUnique({
             where: { id },
             include: {
                 Role: true,
             },
         })
-        console.log(data)
         if (data && !data.is_joined_discord) {
             return res.json("USER NOT JOINED DISCORD").status(500)
         }
@@ -67,7 +65,7 @@ router.get("/", async (req, res) => {
 })
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", AuthMiddleware, async (req, res) => {
     const data = req.body;
     try {
         const response = await prisma.users.create({
@@ -80,7 +78,7 @@ router.post("/", async (req, res) => {
 })
 
 // PUT
-router.put("/", async (req, res) => {
+router.put("/", AuthMiddleware, async (req, res) => {
     const { id }: { id: string } = typeof req.body.id === 'string' ? req.body : { id: "" }
     const data = { ...req.body, rank: Number(req.body.rank), points: Number(req.body.points) }
     const username = req.body.init
