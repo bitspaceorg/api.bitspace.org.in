@@ -1,4 +1,5 @@
 import { Module } from "../../libs/utils/types/module"
+
 import express from "express";
 import { prisma } from "../../libs/utils/prisma";
 import { value, major, timelines } from "./types";
@@ -50,9 +51,7 @@ router.post("/", async (req, res) => {
         },
     })
 
-    let data
-
-    if (check) data = await prisma.timeline.create({
+    if (check) await prisma.timeline.create({
         data: {
             date,
             title,
@@ -74,7 +73,7 @@ router.post("/", async (req, res) => {
             }
         })
     }
-    res.json({ data })
+   res.json(true)
 });
 
 // PUT
@@ -94,14 +93,19 @@ router.put("/", async (req, res) => {
 
 // DELETE
 router.delete("/", async (req, res) => {
-    const { id } = req.body
-    const data = await prisma.timeline.delete({
-        where: {
-            id
-        },
-    })
-    res.json({ data, }).status(200)
-});
+    try {
+        const { id } = req.body
+        console.log(id)
+        const data = await prisma.timeline.delete({
+            where: {
+                id
+            },
+        })
+        return res.json({ data }).status(200)
+    }catch(e){
+        return console.log(e)
+    }
+   });
 
 const MODULE: Module = {
     router,
