@@ -20,7 +20,6 @@ router.put("/", async () => { });
 router.delete("/", async () => { });
 
 router.post("/access_token_github", async (req, res) => {
-    console.log('here')
     const code = req.body?.code || "HELLO";
     const { data } = await axios.post("https://github.com/login/oauth/access_token", {
         client_id,

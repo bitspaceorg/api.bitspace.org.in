@@ -9,8 +9,8 @@ import Timeline from "./timeline"
 import Admin from "./admin"
 import Roles from "./roles"
 import me from "./me"
-import { AuthMiddleware } from "./middleware/auth"
 import { client_base_url } from "../libs/constants"
+import { AuthMiddleware } from "./middleware"
 
 const PORT: number = 6969;
 
