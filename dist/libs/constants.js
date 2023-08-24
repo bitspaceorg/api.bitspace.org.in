@@ -23,14 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.redirect_uri = exports.client_secret = exports.client_id = exports.client_base_url = exports.client_production = exports.base_url = exports.production = void 0;
+exports.redirect_uri = exports.client_secret = exports.client_id = exports.client_base_url = exports.base_url = exports.production = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-exports.production = false;
+exports.production = process.env.PRODUCTION === 'true';
 exports.base_url = !exports.production ? 'http://localhost:6969' : 'https://api.bitspace.org.in';
-exports.client_production = true;
-exports.client_base_url = !exports.client_production ? 'http://localhost:3000' : 'https://bitspace.org.in';
-exports.client_id = "e49d77123e22ded7e2e0";
+exports.client_base_url = !exports.production ? 'http://localhost:3000' : 'https://bitspace.org.in';
+exports.client_id = process.env.GITHUB_CLIENT_ID;
 exports.client_secret = process.env.GITHUB_CLIENT_SECERT;
 exports.redirect_uri = `${exports.client_base_url}/github/auth/callback`;
 //# sourceMappingURL=constants.js.map
