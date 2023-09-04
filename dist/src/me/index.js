@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
         },
         include: {
             Rank: true,
-            Role: true
+            Role_user: true
         }
     });
     return res.json(data).status(200);
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
             github_id: user.user,
             username: user.user,
             is_joined_discord: false,
-            Role: {
+            Role_user: {
                 create: {
                     role: "Member"
                 }

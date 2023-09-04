@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prisma_1 = require("../../libs/utils/prisma");
+const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 const BASE_ROUTE = "/user";
 router.get("/:id", async (req, res) => {
@@ -16,9 +17,12 @@ router.get("/:id", async (req, res) => {
         const data = await prisma_1.prisma.users.findUnique({
             where: { id },
             include: {
-                Role: true,
+                Role_user: true,
             },
         });
+        if (data && !data.is_joined_discord) {
+            return res.json("USER NOT JOINED DISCORD").status(500);
+        }
         return res.json(data).status(200);
     }
     catch (e) {
@@ -26,41 +30,42 @@ router.get("/:id", async (req, res) => {
     }
 });
 router.get("/", async (req, res) => {
-    const { roles } = req.query;
-    if (!roles || roles == 'false') {
+    let { roles } = req.query;
+    if (roles === 'true') {
         try {
             const data = await prisma_1.prisma.users.findMany({
                 include: {
-                    Role: true,
-                },
-            });
-            return res.json(data).status(200);
-        }
-        catch (e) {
-            return res.status(500);
-        }
-    }
-    else if (roles === 'true') {
-        try {
-            const data = await prisma_1.prisma.users.findMany({
-                include: {
-                    Role: true,
+                    Role_user: true,
                 },
                 where: {
-                    Role: {
-                        some: {},
+                    NOT: {
+                        Role_user: {
+                            some: {},
+                        },
                     },
                 },
             });
-            return res.json(data).status(200);
+            return res.json({ type: "SUCCESS", data });
         }
         catch (e) {
-            return res.status(500);
+            return res.json({ type: "FAILED" });
         }
     }
-    return res.status(500).json({ error: 500 });
+    else {
+        try {
+            const data = await prisma_1.prisma.users.findMany({
+                include: {
+                    Role_user: true,
+                }
+            });
+            return res.json({ type: "SUCCESS", data });
+        }
+        catch (e) {
+            return res.json({ type: "FAILED" });
+        }
+    }
 });
-router.post("/", async (req, res) => {
+router.post("/", middleware_1.AuthMiddleware, async (req, res) => {
     const data = req.body;
     try {
         const response = await prisma_1.prisma.users.create({
@@ -72,7 +77,36 @@ router.post("/", async (req, res) => {
         return res.json({ type: "FAILED" });
     }
 });
-router.put("/", async () => { });
+router.put("/", middleware_1.AuthMiddleware, async (req, res) => {
+    const { id } = typeof req.body.id === 'string' ? req.body : { id: "" };
+    const data = Object.assign(Object.assign({}, req.body), { rank: Number(req.body.rank), points: Number(req.body.points) });
+    const username = req.body.init;
+    delete data.init;
+    try {
+        await prisma_1.prisma.role_user.deleteMany({
+            where: { username },
+        });
+        await prisma_1.prisma.role_user.createMany({
+            data: data.Role
+        });
+    }
+    catch (err) {
+        console.log(err);
+        return res.json("ERROR IN UPDATING ROLES").status(400);
+    }
+    try {
+        delete data.Role;
+        const log = await prisma_1.prisma.users.update({
+            where: { id },
+            data,
+        });
+        return res.json(log).status(200);
+    }
+    catch (err) {
+        console.log(err);
+        return res.json("ERROR IN UPDATING USER").status(400);
+    }
+});
 router.delete("/", async () => { });
 const MODULE = {
     router,
