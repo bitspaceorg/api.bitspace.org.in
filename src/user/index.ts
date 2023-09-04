@@ -15,14 +15,11 @@ router.get("/:id", async (req, res) => {
     }
     try {
         const data = await prisma.users.findUnique({
-            where: { id },
+            where: { username: id },
             include: {
                 Role: true,
             },
         })
-        if (data && !data.is_joined_discord) {
-            return res.json("USER NOT JOINED DISCORD").status(500)
-        }
         return res.json(data).status(200)
     } catch (e) {
         return res.status(500)
@@ -96,6 +93,9 @@ router.put("/", AuthMiddleware, async (req, res) => {
     }
     try {
         delete data.Role
+        delete data.Rank
+        delete data.rank
+        delete data.user
         const log = await prisma.users.update({
             where: { id },
             data,
