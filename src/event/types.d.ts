@@ -12,5 +12,6 @@ export type events ={
     poster: string;
     register: string;
     take_away: string;
+    paid : boolean
 }
 

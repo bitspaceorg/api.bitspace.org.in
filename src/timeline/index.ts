@@ -3,6 +3,7 @@ import { Module } from "../../libs/utils/types/module"
 import express from "express";
 import { prisma } from "../../libs/utils/prisma";
 import { value, major, timelines } from "./types";
+import { AuthMiddleware } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -10,9 +11,9 @@ const BASE_ROUTE = "/timeline";
 
 // GET
 router.get("/", async (_, res) => {
-    const data: Array<timelines> = await prisma.year.findMany({
+    const data : Array<timelines> = await prisma.year.findMany({
         include: {
-            timelines: {
+            timeline: {
                 orderBy: {
                     date: 'asc',
                 },
@@ -23,7 +24,7 @@ router.get("/", async (_, res) => {
     data.forEach((element: timelines) => {
         let dict: major = { events: [], year: 0, }
         dict['year'] = element.id
-        element.timelines.forEach((ele: any) => {
+        element.timeline.forEach((ele: any) => {
             let obj: value = {
                 date: ele.date || new Date(0),
                 title: ele.title || '',
@@ -38,7 +39,7 @@ router.get("/", async (_, res) => {
 });
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", AuthMiddleware, async (req, res) => {
     const { title, content }: { title: string, content: Array<string> } = req.body
     let { date }: { date: Date } = req.body
     date = date ? new Date(date) : new Date(Date.now())
@@ -63,7 +64,7 @@ router.post("/", async (req, res) => {
         await prisma.year.create({
             data: {
                 id: year_id,
-                timelines: {
+                timeline : {
                     create: {
                         date,
                         title,
@@ -77,7 +78,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT
-router.put("/", async (req, res) => {
+router.put("/", AuthMiddleware, async (req, res) => {
     const { id, title, content } = req.body
     const data = await prisma.timeline.update({
         where: {
@@ -92,20 +93,15 @@ router.put("/", async (req, res) => {
 });
 
 // DELETE
-router.delete("/", async (req, res) => {
-    try {
-        const { id } = req.body
-        console.log(id)
-        const data = await prisma.timeline.delete({
-            where: {
-                id
-            },
-        })
-        return res.json({ data }).status(200)
-    }catch(e){
-        return console.log(e)
-    }
-   });
+router.delete("/", AuthMiddleware, async (req, res) => {
+    const { id } = req.body
+    const data = await prisma.timeline.delete({
+        where: {
+            id
+        },
+    })
+    res.json({ data, }).status(200)
+});
 
 const MODULE: Module = {
     router,

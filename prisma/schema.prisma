@@ -7,9 +7,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model year {
-  id        Int        @id
-  timelines timeline[]
+model Rank {
+  rank         Int     @id
+  is_mod       Boolean
+  is_super_mod Boolean
+  r_name       String
+  Users        Users[]
+}
+
+model Role {
+  role      String      @id
+  Role_user Role_user[]
+}
+
+model Role_user {
+  role     String
+  username String
+  Role     Role   @relation(fields: [role], references: [role])
+  Users    Users  @relation(fields: [username], references: [username])
+
+  @@id([role, username])
+}
+
+model Slots {
+  id            Int             @id @default(autoincrement())
+  max_count     Int
+  count         Int
+  work_id       String
+  date          DateTime
+  venue         String
+  Workshop      Workshop        @relation(fields: [work_id], references: [id])
+  Workshop_user Workshop_user[]
+}
+
+model Users {
+  id                String          @id
+  username          String          @unique
+  rank              Int
+  is_ban            Boolean         @default(false)
+  title             String
+  is_joined_discord Boolean
+  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
+  discord_id        String?
+  github_id         String
+  strike            Int             @default(0) @db.SmallInt
+  points            Int?            @default(0)
+  Role_user         Role_user[]
+  Rank              Rank            @relation(fields: [rank], references: [rank])
+  Workshop_user     Workshop_user[]
+}
+
+model Workshop {
+  id           String        @id
+  fromDate     DateTime
+  toDate       DateTime
+  regDate      DateTime
+  is_completed Boolean       @default(false)
+  paid         Boolean
+  type         Workshop_type @default(BYTECON)
+  name         String
+  description  String
+  agenda       String
+  poster       String
+  register     String
+  take_away    String
+  Slots        Slots[]
+}
+
+model Workshop_user {
+  id      Int             @id @default(autoincrement())
+  slot_id Int
+  user_id String
+  point   workshop_points @default(OK)
+  Slots   Slots           @relation(fields: [slot_id], references: [id])
+  Users   Users           @relation(fields: [user_id], references: [username])
+}
+
+model message {
+  id        Int    @id @default(autoincrement())
+  content   String
+  name      String
+  image     String
+  parent_id Int?
 }
 
 model timeline {
@@ -21,87 +100,9 @@ model timeline {
   year    year     @relation(fields: [year_id], references: [id])
 }
 
-model message {
-  id        Int    @id @default(autoincrement())
-  content   String
-  name      String
-  image     String
-  parent_id Int?
-}
-
-model Users {
-  id                String          @id @default(cuid())
-  username          String          @unique
-  rank              Int
-  is_ban            Boolean         @default(false)
-  title             String
-  is_joined_discord Boolean
-  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
-  discord_id        String?
-  github_id         String
-  strike            Int             @default(0) @db.SmallInt
-  points            Int?            @default(0)
-  Role              Role_user[]
-  Rank              Rank            @relation(fields: [rank], references: [rank])
-  workshops         Workshop_user[]
-}
-
-model Role {
-  role  String      @id
-  users Role_user[]
-}
-
-model Role_user {
-  role     String
-  username String
-  Roles    Role   @relation(fields: [role], references: [role])
-  User     Users  @relation(fields: [username], references: [username])
-
-  @@id([role, username])
-}
-
-model Rank {
-  rank         Int     @id
-  is_mod       Boolean
-  is_super_mod Boolean
-  r_name       String
-  Users        Users[]
-}
-
-model Workshop {
-  id           String        @id
-  fromDate     DateTime
-  toDate       DateTime
-  regDate      DateTime
-  is_completed Boolean       @default(false)
-  type         Workshop_type @default(BYTECON)
-  name         String
-  description  String
-  agenda       String
-  poster       String
-  register     String
-  take_away    String
-  slots        Slots[]
-}
-
-model Slots {
-  id            Int             @id @default(autoincrement())
-  max_count     Int
-  count         Int
-  workshop      Workshop        @relation(fields: [work_id], references: [id])
-  work_id       String
-  date          DateTime
-  workshop_user Workshop_user[]
-  venue String
-}
-
-model Workshop_user {
-  id      Int             @id @default(autoincrement())
-  slots   Slots           @relation(fields: [slot_id], references: [id])
-  slot_id Int
-  users   Users           @relation(fields: [user_id], references: [username])
-  user_id String
-  point   workshop_points @default(OK)
+model year {
+  id       Int        @id
+  timeline timeline[]
 }
 
 enum Workshop_type {
