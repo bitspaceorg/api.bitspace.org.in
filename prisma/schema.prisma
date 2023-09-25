@@ -7,30 +7,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model year {
-  id        Int        @id
-  timelines timeline[]
+model Rank {
+  rank         Int     @id
+  is_mod       Boolean
+  is_super_mod Boolean
+  r_name       String
+  Users        Users[]
 }
 
-model timeline {
-  id      Int      @id @default(autoincrement())
-  title   String
-  content String[]
-  date    DateTime
-  year_id Int
-  year    year     @relation(fields: [year_id], references: [id])
+model Role {
+  role      String      @id
+  Role_user Role_user[]
 }
 
-model message {
-  id        Int    @id @default(autoincrement())
-  content   String
-  name      String
-  image     String
-  parent_id Int?
+model Role_user {
+  role     String
+  username String
+  Role     Role   @relation(fields: [role], references: [role])
+  Users    Users  @relation(fields: [username], references: [username])
+
+  @@id([role, username])
+}
+
+model Slots {
+  id            Int             @id @default(autoincrement())
+  max_count     Int
+  count         Int
+  work_id       String
+  date          DateTime
+  venue         String
+  Workshop      Workshop        @relation(fields: [work_id], references: [id])
+  Workshop_user Workshop_user[]
 }
 
 model Users {
-  id                String          @id @default(cuid())
+  id                String          @id
   username          String          @unique
   rank              Int
   is_ban            Boolean         @default(false)
@@ -46,39 +57,6 @@ model Users {
   Workshop_user     Workshop_user[]
 }
 
-model Role {
-  role  String      @id
-  users Role_user[]
-}
-
-model Role_user {
-  role     String
-  username String
-  Roles    Role   @relation(fields: [role], references: [role])
-  User     Users  @relation(fields: [username], references: [username])
-
-  @@id([role, username])
-}
-
-model Rank {
-  rank         Int     @id
-  is_mod       Boolean
-  is_super_mod Boolean
-  r_name       String
-  Users        Users[]
-}
-
-model Slots {
-  id            Int             @id @default(autoincrement())
-  max_count     Int
-  count         Int
-  work_id       String
-  date          DateTime
-  venue         String
-  Workshop      Workshop        @relation(fields: [work_id], references: [id])
-  Workshop_user Workshop_user[]
-}
-
 model Workshop {
   id           String        @id
   fromDate     DateTime
@@ -92,6 +70,7 @@ model Workshop {
   poster       String
   register     String
   take_away    String
+  paid         Boolean
   Slots        Slots[]
 }
 
@@ -101,7 +80,29 @@ model Workshop_user {
   user_id String
   point   workshop_points @default(OK)
   Slots   Slots           @relation(fields: [slot_id], references: [id])
-  Users   Users           @relation(fields: [user_id], references: [id])
+  Users   Users           @relation(fields: [user_id], references: [username])
+}
+
+model message {
+  id        Int    @id @default(autoincrement())
+  content   String
+  name      String
+  image     String
+  parent_id Int?
+}
+
+model timeline {
+  id      Int      @id @default(autoincrement())
+  title   String
+  content String[]
+  date    DateTime
+  year_id Int
+  year    year     @relation(fields: [year_id], references: [id])
+}
+
+model year {
+  id       Int        @id
+  timeline timeline[]
 }
 
 enum Workshop_type {

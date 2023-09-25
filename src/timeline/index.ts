@@ -1,4 +1,5 @@
 import { Module } from "../../libs/utils/types/module"
+
 import express from "express";
 import { prisma } from "../../libs/utils/prisma";
 import { value, major, timelines } from "./types";
@@ -10,9 +11,9 @@ const BASE_ROUTE = "/timeline";
 
 // GET
 router.get("/", async (_, res) => {
-    const data: Array<timelines> = await prisma.year.findMany({
+    const data : Array<timelines> = await prisma.year.findMany({
         include: {
-            timelines: {
+            timeline: {
                 orderBy: {
                     date: 'asc',
                 },
@@ -23,7 +24,7 @@ router.get("/", async (_, res) => {
     data.forEach((element: timelines) => {
         let dict: major = { events: [], year: 0, }
         dict['year'] = element.id
-        element.timelines.forEach((ele: any) => {
+        element.timeline.forEach((ele: any) => {
             let obj: value = {
                 date: ele.date || new Date(0),
                 title: ele.title || '',
@@ -51,9 +52,7 @@ router.post("/", AuthMiddleware, async (req, res) => {
         },
     })
 
-    let data
-
-    if (check) data = await prisma.timeline.create({
+    if (check) await prisma.timeline.create({
         data: {
             date,
             title,
@@ -65,7 +64,7 @@ router.post("/", AuthMiddleware, async (req, res) => {
         await prisma.year.create({
             data: {
                 id: year_id,
-                timelines: {
+                timeline : {
                     create: {
                         date,
                         title,
@@ -75,7 +74,7 @@ router.post("/", AuthMiddleware, async (req, res) => {
             }
         })
     }
-    res.json({ data })
+   res.json(true)
 });
 
 // PUT

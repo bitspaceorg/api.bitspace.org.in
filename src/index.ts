@@ -7,6 +7,7 @@ import User from "./user"
 import Auth from "./auth"
 import Timeline from "./timeline"
 import Admin from "./admin"
+import Event from "./event"
 import Roles from "./roles"
 import me from "./me"
 import { AuthMiddleware } from "./middleware"
@@ -32,6 +33,7 @@ app.use(cors(corsOptions), bodyParser.json(), cookieParser());
 
 app.use(Auth.BASE_ROUTE, Auth.router);
 app.use(Timeline.BASE_ROUTE, Timeline.router);
+app.use(Event.BASE_ROUTE , Event.router);
 app.use(Roles.BASE_ROUTE, Roles.router);
 app.use(User.BASE_ROUTE, User.router);
 app.use(Admin.BASE_ROUTE, AuthMiddleware, Admin.router);

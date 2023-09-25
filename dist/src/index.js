@@ -11,6 +11,7 @@ const user_1 = __importDefault(require("./user"));
 const auth_1 = __importDefault(require("./auth"));
 const timeline_1 = __importDefault(require("./timeline"));
 const admin_1 = __importDefault(require("./admin"));
+const event_1 = __importDefault(require("./event"));
 const roles_1 = __importDefault(require("./roles"));
 const me_1 = __importDefault(require("./me"));
 const middleware_1 = require("./middleware");
@@ -31,6 +32,7 @@ const corsOptions = {
 app.use((0, cors_1.default)(corsOptions), body_parser_1.default.json(), (0, cookie_parser_1.default)());
 app.use(auth_1.default.BASE_ROUTE, auth_1.default.router);
 app.use(timeline_1.default.BASE_ROUTE, timeline_1.default.router);
+app.use(event_1.default.BASE_ROUTE, event_1.default.router);
 app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);
 app.use(user_1.default.BASE_ROUTE, user_1.default.router);
 app.use(admin_1.default.BASE_ROUTE, middleware_1.AuthMiddleware, admin_1.default.router);

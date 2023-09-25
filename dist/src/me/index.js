@@ -9,6 +9,7 @@ const router = express_1.default.Router();
 const BASE_ROUTE = "/me";
 router.get("/", async (req, res) => {
     const { user } = req.body.user;
+    console.log(user);
     const data = await prisma_1.prisma.users.findUnique({
         where: {
             username: user

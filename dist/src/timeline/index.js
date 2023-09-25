@@ -11,7 +11,7 @@ const BASE_ROUTE = "/timeline";
 router.get("/", async (_, res) => {
     const data = await prisma_1.prisma.year.findMany({
         include: {
-            timelines: {
+            timeline: {
                 orderBy: {
                     date: 'asc',
                 },
@@ -22,7 +22,7 @@ router.get("/", async (_, res) => {
     data.forEach((element) => {
         let dict = { events: [], year: 0, };
         dict['year'] = element.id;
-        element.timelines.forEach((ele) => {
+        element.timeline.forEach((ele) => {
             let obj = {
                 date: ele.date || new Date(0),
                 title: ele.title || '',
@@ -46,9 +46,8 @@ router.post("/", auth_1.AuthMiddleware, async (req, res) => {
             id: year_id,
         },
     });
-    let data;
     if (check)
-        data = await prisma_1.prisma.timeline.create({
+        await prisma_1.prisma.timeline.create({
             data: {
                 date,
                 title,
@@ -60,7 +59,7 @@ router.post("/", auth_1.AuthMiddleware, async (req, res) => {
         await prisma_1.prisma.year.create({
             data: {
                 id: year_id,
-                timelines: {
+                timeline: {
                     create: {
                         date,
                         title,
@@ -70,7 +69,7 @@ router.post("/", auth_1.AuthMiddleware, async (req, res) => {
             }
         });
     }
-    res.json({ data });
+    res.json(true);
 });
 router.put("/", auth_1.AuthMiddleware, async (req, res) => {
     const { id, title, content } = req.body;
