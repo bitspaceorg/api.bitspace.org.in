@@ -1,11 +1,11 @@
 // Types for the event module
-export type events ={
+export type event = {
     id: string;
     fromDate: Date;
     toDate: Date;
     regDate: Date;
     is_completed: boolean;
-    type: "BYTECON";
+    type:string;
     name: string;
     description: string;
     agenda: string;

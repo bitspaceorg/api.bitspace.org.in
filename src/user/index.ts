@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
         const data = await prisma.users.findUnique({
             where: { username: id },
             include: {
-                Role_user: true,
+                Role : true,
             },
         })
         return res.json(data).status(200)
@@ -33,11 +33,11 @@ router.get("/", async (req, res) => {
         try {
             const data = await prisma.users.findMany({
                 include: {
-                    Role_user: true,
+                    Role : true,
                 },
                 where: {
                     NOT: {
-                        Role_user: {
+                        Role : {
                             some: {},
                         },
                     },
@@ -51,7 +51,7 @@ router.get("/", async (req, res) => {
         try {
             const data = await prisma.users.findMany({
                 include: {
-                    Role_user : true,
+                    Role : true,
                 }
             })
             return res.json({ type: "SUCCESS", data })

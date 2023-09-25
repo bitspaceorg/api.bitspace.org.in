@@ -52,7 +52,7 @@ model Users {
   github_id         String
   strike            Int             @default(0) @db.SmallInt
   points            Int?            @default(0)
-  Role_user         Role_user[]
+  Role              Role_user[]
   Rank              Rank            @relation(fields: [rank], references: [rank])
   Workshop_user     Workshop_user[]
 }
@@ -63,7 +63,6 @@ model Workshop {
   toDate       DateTime
   regDate      DateTime
   is_completed Boolean       @default(false)
-  paid         Boolean
   type         Workshop_type @default(BYTECON)
   name         String
   description  String
@@ -71,6 +70,7 @@ model Workshop {
   poster       String
   register     String
   take_away    String
+  paid         Boolean
   Slots        Slots[]
 }
 

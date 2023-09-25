@@ -9,13 +9,14 @@ const BASE_ROUTE = "/me";
 // GET
 router.get("/", async (req: express.Request, res: express.Response) => {
     const { user } = req.body.user;
+    console.log( user ) ;
     const data = await prisma.users.findUnique({
         where: {
             username: user
         },
         include: {
             Rank: true,
-            Role_user: true
+            Role : true
         }
     })
     return res.json(data).status(200);
@@ -31,7 +32,7 @@ router.post("/", async (req: express.Request, res: express.Response) => {
             github_id: user.user,
             username: user.user,
             is_joined_discord: false,
-            Role_user: {
+            Role : {
                 create: {
                     role: "Member"
                 }
