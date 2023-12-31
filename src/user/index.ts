@@ -78,19 +78,21 @@ router.post("/", AuthMiddleware, async (req, res) => {
 router.put("/", AuthMiddleware, async (req, res) => {
     const { id }: { id: string } = typeof req.body.id === 'string' ? req.body : { id: "" }
     const data = { ...req.body, rank: Number(req.body.rank), points: Number(req.body.points) }
-    const username = req.body.init
+    console.log(data)
+    // const username = req.body.init
     delete data.init
-    try {
-        await prisma.role_user.deleteMany({
-            where: { username },
-        })
-        await prisma.role_user.createMany({
-            data: data.Role
-        })
-    } catch (err) {
-        console.log(err)
-        return res.json("ERROR IN UPDATING ROLES").status(400)
-    }
+    // try {
+    //     await prisma.role_user.deleteMany({
+    //         where: { username },
+    //     })
+    //     await prisma.role_user.createMany({
+    //         data: data.Role
+    //     })
+    // } catch (err) {
+    //     console.log(err)
+    //     console.log("1")
+    //     return res.json("ERROR IN UPDATING ROLES").status(400)
+    // }
     try {
         delete data.Role
         delete data.Rank

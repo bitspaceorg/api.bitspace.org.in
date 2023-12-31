@@ -15,7 +15,7 @@ const PORT: number = 6969;
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
+const allowedOrigins = ['http://localhost:4200', 'https://www.join.bitspace.org.in', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
 
 const corsOptions = {
     origin: function(origin: any, callback: any) {

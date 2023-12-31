@@ -1,118 +1,68 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model year {
-  id        Int        @id
-  timelines timeline[]
+    id        Int        @id
+    timelines timeline[]
 }
 
 model timeline {
-  id      Int      @id @default(autoincrement())
-  title   String
-  content String[]
-  date    DateTime
-  year_id Int
-  year    year     @relation(fields: [year_id], references: [id])
+    id      Int      @id @default(autoincrement())
+    title   String
+    content String[]
+    date    DateTime
+    year_id Int
+    year    year     @relation(fields: [year_id], references: [id])
 }
 
 model message {
-  id        Int    @id @default(autoincrement())
-  content   String
-  name      String
-  image     String
-  parent_id Int?
+    id        Int    @id @default(autoincrement())
+    content   String
+    name      String
+    image     String
+    parent_id Int?
 }
 
 model Users {
-  id                String          @id @default(cuid())
-  username          String          @unique
-  rank              Int
-  is_ban            Boolean         @default(false)
-  title             String
-  is_joined_discord Boolean
-  created_at        DateTime?       @default(now()) @db.Timestamptz(6)
-  discord_id        String?
-  github_id         String
-  strike            Int             @default(0) @db.SmallInt
-  points            Int?            @default(0)
-  Role              Role_user[]
-  Rank              Rank            @relation(fields: [rank], references: [rank])
-  Workshop_user     Workshop_user[]
+    id                String      @id @default(cuid())
+    username          String      @unique
+    rank              Int
+    is_ban            Boolean     @default(false)
+    title             String
+    is_joined_discord Boolean
+    created_at        DateTime?   @default(now()) @db.Timestamptz(6)
+    discord_id        String?     @unique
+    github_id         String
+    strike            Int         @default(0) @db.SmallInt
+    points            Int?        @default(0)
+    Role              Role_user[]
+    Rank              Rank        @relation(fields: [rank], references: [rank])
 }
 
 model Role {
-  role  String      @id
-  users Role_user[]
+    role  String      @id
+    users Role_user[]
 }
 
 model Role_user {
-  role     String
-  username String
-  Roles    Role   @relation(fields: [role], references: [role])
-  User     Users  @relation(fields: [username], references: [username])
+    role     String
+    username String
+    Roles    Role   @relation(fields: [role], references: [role])
+    User     Users  @relation(fields: [username], references: [username])
 
-  @@id([role, username])
+    @@id([role, username])
 }
 
 model Rank {
-  rank         Int     @id
-  is_mod       Boolean
-  is_super_mod Boolean
-  r_name       String
-  Users        Users[]
-}
-
-model Slots {
-  id            Int             @id @default(autoincrement())
-  max_count     Int
-  count         Int
-  work_id       String
-  date          DateTime
-  venue         String
-  Workshop      Workshop        @relation(fields: [work_id], references: [id])
-  Workshop_user Workshop_user[]
-}
-
-model Workshop {
-  id           String        @id
-  fromDate     DateTime
-  toDate       DateTime
-  regDate      DateTime
-  is_completed Boolean       @default(false)
-  type         Workshop_type @default(BYTECON)
-  name         String
-  description  String
-  agenda       String
-  poster       String
-  register     String
-  take_away    String
-  Slots        Slots[]
-}
-
-model Workshop_user {
-  id      Int             @id @default(autoincrement())
-  slot_id Int
-  user_id String
-  point   workshop_points @default(OK)
-  Slots   Slots           @relation(fields: [slot_id], references: [id])
-  Users   Users           @relation(fields: [user_id], references: [id])
-}
-
-enum Workshop_type {
-  BYTECON
-}
-
-enum workshop_points {
-  WORST
-  BAD
-  OK
-  GOOD
-  BETTER
-  BEST
+    rank         Int     @id
+    is_mod       Boolean
+    is_super_mod Boolean
+    r_name       String
+    Users        Users[]
 }

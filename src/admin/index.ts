@@ -9,13 +9,13 @@ const router = express.Router();
 const BASE_ROUTE = "/admin";
 
 // GET
-router.get("/", async ( _ ,res:Response) => {
+router.get("/", async (_, res: Response) => {
     const data = await prisma.rank.findMany({
-        orderBy : [
-            { rank : 'asc' }
+        orderBy: [
+            { rank: 'asc' }
         ],
-        include : {
-            Users : true
+        include: {
+            Users: true
         }
     })
     res.json(data)
@@ -25,8 +25,8 @@ router.get("/", async ( _ ,res:Response) => {
 router.post("/", async () => { });
 
 // POST - STRIKE
-router.post("/strike", async (req, res) => { 
-    const { id } : { id: string } = req.body
+router.post("/strike", async (req, res) => {
+    const { id }: { id: string } = req.body
     const { strike } = await prisma.users.update({
         where: {
             id,
@@ -35,19 +35,38 @@ router.post("/strike", async (req, res) => {
             strike: { increment: 1 },
         }
     })
-    if ( strike >= 3 ){
-        const {data} = await axios.post(`${base_url}/admin/ban`, { id })
+    if (strike >= 3) {
+        const { data } = await axios.post(`${base_url}/admin/ban`, { id })
         res.json(data).status(301);
         return;
     }
-    res.json({strike}).status(301)
+    res.json({ strike }).status(301)
+});
+
+// POST - DISCORD-STRIKE
+router.post("/discord-strike", async (req, res) => {
+    const RES_B: { id: string } = req.body
+    const { id, strike } = await prisma.users.update({
+        where: {
+            discord_id: RES_B.id,
+        },
+        data: {
+            strike: { increment: 1 },
+        }
+    })
+    if (strike >= 3) {
+        const { data } = await axios.post(`${base_url}/admin/ban`, { id })
+        res.json(data).status(301);
+        return;
+    }
+    res.json({ strike }).status(301)
 });
 
 // POST - BAN
 router.post("/ban", async (req, res) => {
-    const { id } : { id: string  } = req.body
+    const { id }: { id: string } = req.body
     const bool = await prisma.users.findUnique({
-        where : { id }
+        where: { id }
     })
     const data = await prisma.users.update({
         where: { id },
