@@ -28,7 +28,8 @@ router.post("/access_token_github", async (req, res) => {
     }, {
         headers: {
             "Accept": "application/json"
-        }
+        },
+        withCredentials: true
     })
     res.cookie("bs_access_token", data.access_token, {})
     return res.json(data);
