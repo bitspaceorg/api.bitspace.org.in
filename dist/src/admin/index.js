@@ -38,6 +38,23 @@ router.post("/strike", async (req, res) => {
     }
     res.json({ strike }).status(301);
 });
+router.post("/discord-strike", async (req, res) => {
+    const RES_B = req.body;
+    const { id, strike } = await prisma_1.prisma.users.update({
+        where: {
+            discord_id: RES_B.id,
+        },
+        data: {
+            strike: { increment: 1 },
+        }
+    });
+    if (strike >= 3) {
+        const { data } = await axios_1.default.post(`${constants_1.base_url}/admin/ban`, { id });
+        res.json(data).status(301);
+        return;
+    }
+    res.json({ strike }).status(301);
+});
 router.post("/ban", async (req, res) => {
     const { id } = req.body;
     const bool = await prisma_1.prisma.users.findUnique({

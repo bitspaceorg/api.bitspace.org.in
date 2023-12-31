@@ -16,7 +16,7 @@ const me_1 = __importDefault(require("./me"));
 const middleware_1 = require("./middleware");
 const PORT = 6969;
 const app = (0, express_1.default)();
-const allowedOrigins = ['http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
+const allowedOrigins = ['http://localhost:4200', 'https://www.join.bitspace.org.in', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.includes(origin) || !origin) {

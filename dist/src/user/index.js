@@ -15,14 +15,11 @@ router.get("/:id", async (req, res) => {
     }
     try {
         const data = await prisma_1.prisma.users.findUnique({
-            where: { id },
+            where: { username: id },
             include: {
                 Role: true,
             },
         });
-        if (data && !data.is_joined_discord) {
-            return res.json("USER NOT JOINED DISCORD").status(500);
-        }
         return res.json(data).status(200);
     }
     catch (e) {
@@ -80,22 +77,13 @@ router.post("/", middleware_1.AuthMiddleware, async (req, res) => {
 router.put("/", middleware_1.AuthMiddleware, async (req, res) => {
     const { id } = typeof req.body.id === 'string' ? req.body : { id: "" };
     const data = Object.assign(Object.assign({}, req.body), { rank: Number(req.body.rank), points: Number(req.body.points) });
-    const username = req.body.init;
+    console.log(data);
     delete data.init;
     try {
-        await prisma_1.prisma.role_user.deleteMany({
-            where: { username },
-        });
-        await prisma_1.prisma.role_user.createMany({
-            data: data.Role
-        });
-    }
-    catch (err) {
-        console.log(err);
-        return res.json("ERROR IN UPDATING ROLES").status(400);
-    }
-    try {
         delete data.Role;
+        delete data.Rank;
+        delete data.rank;
+        delete data.user;
         const log = await prisma_1.prisma.users.update({
             where: { id },
             data,
