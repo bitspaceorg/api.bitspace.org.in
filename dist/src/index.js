@@ -30,6 +30,12 @@ app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);
 app.use(user_1.default.BASE_ROUTE, user_1.default.router);
 app.use(admin_1.default.BASE_ROUTE, middleware_1.AuthMiddleware, admin_1.default.router);
 app.use(me_1.default.BASE_ROUTE, middleware_1.AuthMiddleware, me_1.default.router);
+app.use((_, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+});
 app.listen(PORT, () => {
     console.log("SERVER IS RUNNING ON PORT " + PORT);
 });
