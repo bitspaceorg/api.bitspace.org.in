@@ -78,7 +78,6 @@ router.post("/", AuthMiddleware, async (req, res) => {
 router.put("/", AuthMiddleware, async (req, res) => {
     const { id }: { id: string } = typeof req.body.id === 'string' ? req.body : { id: "" }
     const data = { ...req.body, rank: Number(req.body.rank), points: Number(req.body.points) }
-    console.log(data)
     // const username = req.body.init
     delete data.init
     // try {

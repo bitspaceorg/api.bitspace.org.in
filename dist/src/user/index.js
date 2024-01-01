@@ -77,7 +77,6 @@ router.post("/", middleware_1.AuthMiddleware, async (req, res) => {
 router.put("/", middleware_1.AuthMiddleware, async (req, res) => {
     const { id } = typeof req.body.id === 'string' ? req.body : { id: "" };
     const data = Object.assign(Object.assign({}, req.body), { rank: Number(req.body.rank), points: Number(req.body.points) });
-    console.log(data);
     delete data.init;
     try {
         delete data.Role;

@@ -10,7 +10,6 @@ const BASE_ROUTE = "/timeline";
 
 // GET
 router.get("/", async (_, res) => {
-    console.log('here', 1)
     const data: Array<timelines> = await prisma.year.findMany({
         include: {
             timelines: {
