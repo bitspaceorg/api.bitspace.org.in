@@ -15,6 +15,7 @@ router.delete("/", async () => { });
 router.post("/access_token_github", async (req, res) => {
     var _a;
     const code = ((_a = req.body) === null || _a === void 0 ? void 0 : _a.code) || "HELLO";
+    console.log(code);
     try {
         const { data } = await axios_1.default.post("https://github.com/login/oauth/access_token", {
             client_id: constants_1.client_id,
