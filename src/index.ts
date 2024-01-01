@@ -23,6 +23,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions), bodyParser.json(), cookieParser());
+// PRE-FLIGHT OPTIONS
+app.options('*', cors(corsOptions));
 
 app.use(Auth.BASE_ROUTE, Auth.router);
 app.use(Timeline.BASE_ROUTE, Timeline.router);
