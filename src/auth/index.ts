@@ -32,7 +32,11 @@ router.post("/access_token_github", async (req, res) => {
             },
             withCredentials: true
         })
-        res.cookie("bs_access_token", data.access_token, {})
+        res.cookie("bs_access_token", data.access_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        })
         return res.json(data);
     } catch (err) {
     }
