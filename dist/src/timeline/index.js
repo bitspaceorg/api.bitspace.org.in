@@ -9,6 +9,7 @@ const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 const BASE_ROUTE = "/timeline";
 router.get("/", async (_, res) => {
+    console.log('here', 1);
     const data = await prisma_1.prisma.year.findMany({
         include: {
             timelines: {

@@ -16,19 +16,14 @@ const me_1 = __importDefault(require("./me"));
 const middleware_1 = require("./middleware");
 const PORT = 6969;
 const app = (0, express_1.default)();
-const allowedOrigins = ['http://localhost:4200', 'https://www.join.bitspace.org.in', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://bitspace.org.in'];
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (allowedOrigins.includes(origin) || !origin) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
+    origin: ['http://localhost:4200', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://www.join.bitspace.org.in'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
 };
 app.use((0, cors_1.default)(corsOptions), body_parser_1.default.json(), (0, cookie_parser_1.default)());
+app.options('*', (0, cors_1.default)(corsOptions));
 app.use(auth_1.default.BASE_ROUTE, auth_1.default.router);
 app.use(timeline_1.default.BASE_ROUTE, timeline_1.default.router);
 app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);
