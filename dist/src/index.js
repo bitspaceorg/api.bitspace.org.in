@@ -24,6 +24,7 @@ const corsOptions = {
     optionsSuccessStatus: 204,
 };
 app.use((0, cors_1.default)(corsOptions), body_parser_1.default.json(), (0, cookie_parser_1.default)());
+app.options('*', (0, cors_1.default)(corsOptions));
 app.use(auth_1.default.BASE_ROUTE, auth_1.default.router);
 app.use(timeline_1.default.BASE_ROUTE, timeline_1.default.router);
 app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);
