@@ -16,14 +16,14 @@ const me_1 = __importDefault(require("./me"));
 const middleware_1 = require("./middleware");
 const PORT = 6969;
 const app = (0, express_1.default)();
+const allowedOrigins = ['http://localhost:4200', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://www.join.bitspace.org.in'];
 const corsOptions = {
-    origin: ['http://localhost:4200', 'http://localhost:3000', 'https://www.bitspace.org.in', 'https://www.join.bitspace.org.in'],
+    origin: allowedOrigins,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
 };
 app.use((0, cors_1.default)(corsOptions), body_parser_1.default.json(), (0, cookie_parser_1.default)());
-app.options('*', (0, cors_1.default)(corsOptions));
 app.use(auth_1.default.BASE_ROUTE, auth_1.default.router);
 app.use(timeline_1.default.BASE_ROUTE, timeline_1.default.router);
 app.use(roles_1.default.BASE_ROUTE, roles_1.default.router);
@@ -31,7 +31,7 @@ app.use(user_1.default.BASE_ROUTE, user_1.default.router);
 app.use(admin_1.default.BASE_ROUTE, middleware_1.AuthMiddleware, admin_1.default.router);
 app.use(me_1.default.BASE_ROUTE, middleware_1.AuthMiddleware, me_1.default.router);
 app.use((_, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigins);
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
